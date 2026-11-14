@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#241712" />
+  <title>Ember &amp; Ease — A Village Healing Journey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Ember and Ease home"><span class="brand-mark">✳</span><span>EMBER <i>&amp;</i> EASE</span></a>
+      <div class="chapter">CHAPTER 01 <span>·</span> THE WARM VILLAGE</div>
+      <button class="sound-button" id="soundButton" aria-label="Toggle ambient sound" title="Toggle sound">♫</button>
+    </header>
+    <section class="intro-row" aria-label="Game introduction">
+      <div><p class="eyebrow">A LITTLE HEALING GOES A LONG WAY</p><h1>Good morning,<br><em>healer.</em></h1></div>
+      <div class="healed-card"><span class="sun-icon">☀</span><div><strong id="healedCount">0 <small>/ 5</small></strong><span>VILLAGERS EASED</span></div></div>
+    </section>
+    <section class="game-frame" aria-label="Village game">
+      <div class="scene-top"><span><span class="weather-dot"></span> KÖKTEREK VILLAGE</span><span class="day-label">DAY 01 <span>·</span> LATE MORNING</span></div>
+      <div class="canvas-wrap">
+        <canvas id="game" width="360" height="510" aria-label="Pixel art village. Move Zhanat with the directional controls and approach villagers."></canvas>
+        <div class="toast" id="toast" aria-live="polite"></div>
+        <div class="dialogue" id="dialogue" role="dialog" aria-modal="true" aria-labelledby="dialogueName" hidden>
+          <div class="dialogue-top"><span class="dialogue-avatar" id="dialogueAvatar">✦</span><div><span class="speaker-label" id="speakerLabel">VILLAGER</span><strong id="dialogueName">Aigerim</strong></div><button class="close-dialog" id="closeDialogue" aria-label="Close dialogue">×</button></div>
+          <p class="dialogue-text" id="dialogueText"></p>
+          <div class="dialogue-actions" id="dialogueActions"></div>
+          <span class="dialogue-hint" id="dialogueHint">A KIND WORD CAN BE A GOOD BEGINNING</span>
+        </div>
+        <div class="healing-banner" id="healingBanner" hidden><span class="banner-sparkle">✦</span><span id="healingCaption">A LITTLE WARMTH, A LOT OF CARE</span><span class="banner-sparkle">✦</span></div>
+      </div>
+      <div class="scene-footer"><span id="nearbyLabel">WANDER AT YOUR OWN PACE</span><span class="key-hint"><kbd>E</kbd> TALK</span></div>
+    </section>
+    <footer class="bottom-row">
+      <div class="guide-copy"><span class="guide-icon">✧</span><div><strong id="guideTitle">Find someone who needs a hand</strong><span id="guideText">Wander close to a villager, then say hello.</span></div></div>
+      <div class="mobile-controls" aria-label="Movement controls">
+        <div class="dpad">
+          <button class="move up" data-dir="up" aria-label="Move up">▲</button>
+          <button class="move left" data-dir="left" aria-label="Move left">◀</button>
+          <button class="move down" data-dir="down" aria-label="Move down">▼</button>
+          <button class="move right" data-dir="right" aria-label="Move right">▶</button>
+        </div>
+        <button class="interact-button" id="interactButton"><span>✦</span><b>TALK</b></button>
+      </div>
+    </footer>
+    <div class="page-foot"><span>MADE WITH WARMTH IN KÖKTEREK</span><span>✦ &nbsp; NO RUSH, NO WRONG TURNS &nbsp; ✦</span></div>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
