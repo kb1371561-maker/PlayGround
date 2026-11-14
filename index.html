@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#101210">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23141714' stroke='%23e9b46b' stroke-width='2'/%3E%3Cpath d='M32 13v38M13 32h38M19 19l26 26m0-26L19 45' stroke='%23e9b46b' stroke-width='3'/%3E%3C/svg%3E">
+<title>Ember &amp; Breath — A Healing Walk</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--cream:#e9dfc9;--gold:#e9b46b;--muted:#a9a18f;--line:rgba(232,220,195,.18)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#101210;color:var(--cream);font-family:Manrope,system-ui,sans-serif;touch-action:none}canvas{display:block;position:fixed;inset:0;outline:none}
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 49%,transparent 38%,rgba(4,7,6,.24) 77%,rgba(4,7,6,.72) 130%);mix-blend-mode:multiply}
+#grain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.08;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+#hud{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .7s}body.playing #hud{opacity:1}.topbar{position:absolute;left:34px;right:34px;top:24px;display:flex;align-items:flex-start;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center}.brand-mark{width:34px;height:34px;border:1px solid rgba(233,180,107,.65);border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:17px}.brand-name{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}.brand-sub{font:9px 'DM Mono',monospace;letter-spacing:.15em;color:#9e9684;margin-top:4px}.counter{background:rgba(13,16,14,.68);border:1px solid var(--line);padding:11px 15px;display:flex;align-items:center;gap:13px;backdrop-filter:blur(8px)}.counter .count{font:11px 'DM Mono',monospace;color:#c5baa4;letter-spacing:.08em}.counter strong{font:700 19px Manrope;color:var(--gold);letter-spacing:-.05em}.counter small{font:9px 'DM Mono',monospace;color:#8f897c;text-transform:uppercase;letter-spacing:.12em}
+#crosshair{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);opacity:.8;transition:all .2s}.cross-line{position:absolute;background:rgba(239,231,211,.9);box-shadow:0 0 4px #111}.cross-line.h{width:12px;height:1px;left:3px;top:8px}.cross-line.v{width:1px;height:12px;top:3px;left:8px}#crosshair.focus{transform:translate(-50%,-50%) scale(1.45);filter:drop-shadow(0 0 6px #f4a44d)}#crosshair.focus .cross-line{background:#ffcf87}
+#target-card{position:absolute;left:50%;top:calc(50% + 28px);transform:translateX(-50%);text-align:center;opacity:0;transition:opacity .18s;white-space:nowrap}#target-card.visible{opacity:1}.target-name{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;text-shadow:0 2px 6px #000}.target-hint{margin-top:5px;font:9px 'DM Mono',monospace;color:#e3ba80;letter-spacing:.1em;text-transform:uppercase}
+#toast{position:absolute;left:50%;top:69%;transform:translate(-50%,10px);opacity:0;transition:all .35s ease;text-align:center;padding:11px 17px;background:rgba(17,19,16,.8);border:1px solid rgba(232,190,126,.28);font-size:12px;letter-spacing:.02em;backdrop-filter:blur(8px);max-width:90vw}#toast.show{opacity:1;transform:translate(-50%,0)}#toast .gratitude{display:block;color:#e5b974;font:9px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;margin-top:5px}
+#objective{position:absolute;left:34px;bottom:28px;color:#c8c0ae;font:9px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:9px}#objective:before{content:'';width:5px;height:5px;background:#d89351;border-radius:50%;box-shadow:0 0 8px #f68e3a}
+#mobile-controls{display:none;pointer-events:none}.joystick{position:absolute;bottom:30px;left:25px;width:118px;height:118px;border-radius:50%;border:1px solid rgba(237,226,203,.22);background:rgba(13,17,15,.2);pointer-events:auto;touch-action:none}.joy-knob{position:absolute;width:47px;height:47px;border:1px solid rgba(239,222,193,.47);border-radius:50%;left:35px;top:35px;background:rgba(225,206,173,.16);box-shadow:0 3px 14px #0005}.mobile-action{pointer-events:auto;position:absolute;bottom:43px;right:26px;width:76px;height:76px;border-radius:50%;border:1px solid rgba(231,180,108,.66);background:rgba(31,22,17,.64);color:#f1c57f;font:9px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;display:grid;place-items:center;box-shadow:0 0 25px #e8843620;touch-action:manipulation}.mobile-action.ready{background:rgba(158,82,39,.45);box-shadow:0 0 24px #f39c4d45}.look-hint{position:absolute;right:22px;bottom:131px;color:#c9c0ad;font:8px 'DM Mono',monospace;letter-spacing:.12em;opacity:.6}
+#start-screen,#complete-screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,rgba(8,11,10,.88),rgba(8,11,10,.46) 57%,rgba(8,11,10,.12)),linear-gradient(0deg,rgba(8,10,9,.5),transparent 40%);transition:opacity .8s,visibility .8s}#start-screen.hidden,#complete-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}.intro{width:min(610px,calc(100vw - 48px));margin-left:clamp(22px,9vw,150px);margin-right:auto}.eyebrow{display:flex;align-items:center;gap:12px;font:10px 'DM Mono',monospace;letter-spacing:.2em;color:#e8b675;text-transform:uppercase}.eyebrow:before{content:'';width:30px;height:1px;background:#e8b675}.intro h1{font-size:clamp(50px,7vw,88px);line-height:.91;letter-spacing:-.075em;font-weight:500;margin:24px 0 22px;max-width:620px}.intro h1 em{font-style:normal;color:#e4a963}.intro p{font-size:14px;line-height:1.75;color:#c0baad;max-width:425px;margin:0 0 28px}.start-row{display:flex;align-items:center;gap:22px}.start-button{border:0;background:#d89351;color:#21170f;padding:15px 25px;font:700 10px Manrope;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .2s}.start-button:hover{background:#f1b56c;transform:translateY(-2px)}.start-note{font:9px 'DM Mono',monospace;color:#a49c8c;letter-spacing:.12em;line-height:1.6;text-transform:uppercase}.controls{margin-top:43px;padding-top:18px;border-top:1px solid var(--line);display:flex;gap:23px;flex-wrap:wrap;font:9px 'DM Mono',monospace;color:#aaa392;letter-spacing:.08em;text-transform:uppercase}.controls span b{color:#e4d8c2;font-weight:500;margin-right:5px}.signature{position:absolute;bottom:25px;left:34px;color:#a39b8b;font:9px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase}.signature b{color:#ded0b7;font-weight:500}.right-note{position:absolute;right:34px;bottom:25px;color:#9e9788;font:9px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}
+#complete-screen{background:rgba(8,11,10,.72);backdrop-filter:blur(5px);text-align:center}.complete-box{max-width:500px;padding:35px}.complete-box .seal{font-size:40px;color:#e6ad68}.complete-box h2{font-size:48px;letter-spacing:-.06em;margin:15px 0 8px;font-weight:500}.complete-box p{color:#bcb4a3;line-height:1.7;font-size:13px}.complete-box .start-button{margin-top:18px}
+@media (max-width:700px){.topbar{left:16px;right:16px;top:15px}.brand-mark{width:29px;height:29px}.brand-name{font-size:9px}.brand-sub{font-size:8px}.counter{padding:9px 10px;gap:8px}.counter strong{font-size:16px}.counter small{font-size:8px}.intro{margin:0 auto}.intro h1{font-size:clamp(48px,12vw,76px)}.intro p{font-size:12px}.controls{gap:12px;margin-top:25px}.signature{left:16px;bottom:13px}.right-note{right:16px;bottom:13px;font-size:8px}body.playing #mobile-controls{display:block}#objective{left:16px;bottom:165px;font-size:8px}.look-hint{display:none}}
+@media (orientation:portrait) and (max-width:700px){#start-screen:after{content:'LANDSCAPE RECOMMENDED';position:absolute;bottom:54px;left:50%;transform:translateX(-50%);font:9px 'DM Mono',monospace;letter-spacing:.16em;color:#d7ac73}.intro{transform:translateY(-10px)}}
+</style>
+</head>
+<body>
+<div id="vignette"></div><div id="grain"></div>
+<div id="hud"><div class="topbar"><div class="brand"><div class="brand-mark">✣</div><div><div class="brand-name">Ember &amp; Breath</div><div class="brand-sub">A HEALING WALK · KAZAKHSTAN</div></div></div><div class="counter"><div><small>People healed</small></div><strong id="healed-count">0/5</strong></div></div><div id="crosshair"><i class="cross-line h"></i><i class="cross-line v"></i></div><div id="target-card"><div class="target-name" id="target-name"></div><div class="target-hint">[ E ] OFFER HEALING</div></div><div id="toast"></div><div id="objective">Find someone who needs a moment</div><div id="mobile-controls"><div class="joystick" id="joystick"><div class="joy-knob" id="joy-knob"></div></div><div class="look-hint">DRAG TO LOOK</div><button class="mobile-action" id="heal-touch">HEAL</button></div></div>
+<div id="start-screen"><div class="intro"><div class="eyebrow">A small story of care · 01</div><h1>Ember<br><em>&amp; Breath</em></h1><p>In a quiet village at the edge of the old works, a little warmth can travel a long way. Walk with healer <b>Zhanat Kozhamzharov</b> and tend to those who need it.</p><div class="start-row"><button class="start-button" id="start-button">Enter the village&nbsp; →</button><div class="start-note">No hurry.<br>Just be here.</div></div><div class="controls"><span><b>W A S D</b> walk</span><span><b>MOUSE</b> look</span><span><b>E</b> offer healing</span><span><b>ESC</b> pause</span></div></div><div class="signature">A WALK WITH <b>Zhanat Kozhamzharov</b></div><div class="right-note">NO COMBAT · ONLY KINDNESS</div></div>
+<div id="complete-screen" class="hidden"><div class="complete-box"><div class="seal">✣</div><h2>All is well.</h2><p>The old yard settles into its evening hush. Five small acts of care, carried gently on warm breath.</p><button class="start-button" id="again-button">Walk again</button></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
+
+// ---------- Scene and renderer ----------
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x171b18);
+scene.fog = new THREE.FogExp2(0x171b18, 0.027);
+const camera = new THREE.PerspectiveCamera(73, innerWidth/innerHeight, .08, 90);
+camera.rotation.order = 'YXZ';
+const renderer = new THREE.WebGLRenderer({antialias:true, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.65)); renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.08;
+document.body.prepend(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0x9aab9e,0x211c16,1.05));
+const moon = new THREE.DirectionalLight(0xb8c3b9,1.3); moon.position.set(-7,12,5); moon.castShadow=true; moon.shadow.mapSize.set(1024,1024); moon.shadow.camera.left=-18; moon.shadow.camera.right=18; moon.shadow.camera.top=20; moon.shadow.camera.bottom=-20; scene.add(moon);
+const warm = new THREE.PointLight(0xffa653,34,13,2); warm.position.set(-1.5,3,-7); scene.add(warm);
+const ambWarm = new THREE.PointLight(0xd46b3a,18,10,2); ambWarm.position.set(7,2.4,-12); scene.add(ambWarm);
+const mat=(color,rough=.85,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+const mats={stone:mat(0x625e51),darkStone:mat(0x373a35),plaster:mat(0x797467),rust:mat(0x633f2e),wood:mat(0x493b2c),wood2:mat(0x66513a),metal:mat(0x424845,.48,.65),oldMetal:mat(0x655b49,.65,.45),glass:new THREE.MeshStandardMaterial({color:0x9b663b,emissive:0x5a2c15,emissiveIntensity:.8,roughness:.35}),cloth:mat(0x4c5a51),cream:mat(0xa49b84),skin:mat(0x98745c),red:mat(0xa92e1d,.38,.35)};
+function box(parent,x,y,z,sx,sy,sz,material,rx=0,ry=0,rz=0){const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function cyl(parent,x,y,z,r1,r2,h,material,segments=12,rx=0,rz=0){const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,segments),material);m.position.set(x,y,z);m.rotation.set(rx,0,rz);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function sphere(parent,x,y,z,r,material,sx=1,sy=1,sz=1){const m=new THREE.Mesh(new THREE.SphereGeometry(r,14,10),material);m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m}
+function makeTexture(base, accent, type='stone'){
+ const c=document.createElement('canvas');c.width=512;c.height=512;const g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,512,512);
+ let seed=45;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+ if(type==='brick') {for(let y=0;y<512;y+=42){g.fillStyle=accent;g.fillRect(0,y,512,3);for(let x=(y/42%2)*38;x<512;x+=76){g.fillRect(x,y,3,42)}}}
+ else if(type==='plank'){for(let y=0;y<512;y+=64){g.fillStyle=accent;g.fillRect(0,y,512,3);for(let i=0;i<13;i++){g.strokeStyle=`rgba(18,13,9,${rand()*.28})`;g.beginPath();g.moveTo(rand()*512,y+rand()*64);g.bezierCurveTo(rand()*512,y+rand()*64,rand()*512,y+rand()*64,rand()*512,y+rand()*64);g.stroke()}}}
+ for(let i=0;i<5500;i++){g.fillStyle=rand()>.5?'rgba(220,207,174,.035)':'rgba(9,12,10,.075)';let x=rand()*512,y=rand()*512,r=rand()*2.2;g.fillRect(x,y,r,r)}
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);return t
+}
+const groundTex=makeTexture('#403f36','#292b26','stone'), wallTex=makeTexture('#706b5d','#514e45','brick'), woodTex=makeTexture('#514331','#30271d','plank');
+const groundMat=new THREE.MeshStandardMaterial({map:groundTex,color:0xaaa18b,roughness:1});
+const wallTextMat=new THREE.MeshStandardMaterial({map:wallTex,color:0xb8ad92,roughness:1});
+const woodTextMat=new THREE.MeshStandardMaterial({map:woodTex,color:0xb7a17b,roughness:.95});
+
+// ---------- Twilight village courtyard ----------
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(50,56),groundMat);floor.rotation.x=-Math.PI/2;floor.position.set(0,-.045,-7);floor.receiveShadow=true;scene.add(floor);
+// Broken paving stones scattered into the dirt lane
+const paving=mat(0x5a584d);for(let z=-24;z<12;z+=2.05)for(let x=-7;x<8;x+=2.1){if(Math.random()<.2)continue;const p=box(scene,x+(Math.random()-.5)*.24,.005,z+(Math.random()-.5)*.22,1.82+Math.random()*.25,.09,1.72+Math.random()*.25,paving,0,(Math.random()-.5)*.04,0);p.receiveShadow=true}
+// Left-side old workshop: stone lower walls, timber upper wall, corrugated roof
+box(scene,-12,2,-9,8,4,36,wallTextMat);box(scene,-12,4.2,-9,8.2,.3,36,mats.wood);
+for(let z=-24;z<=8;z+=5){box(scene,-7.92,2,z,.2,4.2,.22,mats.wood2);box(scene,-7.92,4.15,z,.2,.17,.42,mats.rust)}
+// tall dim windows and warm interior glow
+for(let z=-22;z<=6;z+=7){box(scene,-7.88,2.4,z, .06,1.45,1.6,mats.darkStone);box(scene,-7.82,2.4,z,.06,1.14,1.25,mats.glass);box(scene,-7.75,2.4,z,.12,.08,1.65,mats.oldMetal);box(scene,-7.75,2.4,z,.12,1.48,.08,mats.oldMetal);box(scene,-7.7,2.4,z,.12,.08,1.25,mats.oldMetal)}
+// corrugated roof panels with rusty ribs
+box(scene,-11.8,4.35,-9,8.7,.3,36,mats.rust,0,0,.03);
+for(let z=-26;z<10;z+=.75)box(scene,-11.8,4.55,z,8.6,.09,.07,mats.oldMetal,0,0,.03);
+// Right side: plastered village houses / machine shed
+box(scene,12,2.1,-11,7,4.2,32,wallTextMat);box(scene,12,4.25,-11,7.3,.28,32,mats.wood);
+for(let z=-25;z<=1;z+=6){box(scene,8.47,2,z,.16,4.25,.25,mats.wood2);box(scene,8.47,4.1,z,.17,.15,.4,mats.rust)}
+// pitched roof planes
+box(scene,11.4,5.25,-11,4.2,.22,33,mats.rust,0,0,-.28);box(scene,14.7,5.25,-11,4.2,.22,33,mats.rust,0,0,.28);
+for(let z=-26;z<5;z+=1){box(scene,11.5,5.37,z,4.25,.06,.065,mats.oldMetal,0,0,-.28);box(scene,14.6,5.37,z,4.25,.06,.065,mats.oldMetal,0,0,.28)}
+// far end of the lane, low outbuildings and silhouette hills
+box(scene,0,2,-25,24,4,2,wallTextMat);box(scene,0,4.4,-25,25,.35,2.5,mats.rust);
+// doorway to a glowing workshop
+box(scene,3.8,1.5,-23.9,2.1,3,.18,mats.darkStone);box(scene,3.8,1.5,-23.78,1.66,2.65,.08,mats.wood);box(scene,3.8,1.45,-23.7,.95,2.1,.07,mats.darkStone);
+// exposed pipes and utility clutter
+for(let x of [-7.3,8.4]){cyl(scene,x,2.8,-7,.11,.11,35,mats.metal,10,Math.PI/2);for(let z=-23;z<10;z+=4)box(scene,x+(x<0?.12:-.12),2.8,z,.18,.2,.2,mats.rust)}
+// crates, oil drums, sacks
+function crate(x,y,z,s=1){const group=new THREE.Group();group.position.set(x,y,z);scene.add(group);box(group,0,s*.48,0,s,s,s,woodTextMat);for(let i=-1;i<=1;i+=2){box(group,i*s*.38,s*.48,s*.505,.09,s*.95,.08,mats.wood2);box(group,i*s*.38,s*.48,-s*.505,.09,s*.95,.08,mats.wood2)}box(group,0,s*.48,s*.51,s*.92,.08,.08,mats.wood2);return group}
+crate(-5.4,0,-5,1.15);crate(-4.3,0,-5.3,.7);crate(6.7,0,-18,1.3);crate(5.7,0,-18.3,.78);crate(-6.3,0,-20,.9);
+const barrelMat=mat(0x494e49,.45,.65);for(const [x,z] of [[6.5,-7],[-5.7,-13],[7,-22]]){cyl(scene,x,.65,z,.42,.42,1.3,barrelMat,16);cyl(scene,x,.18,z,.435,.435,.08,mats.oldMetal,16);cyl(scene,x,1.12,z,.435,.435,.08,mats.oldMetal,16);box(scene,x,.68,z+.419,.5,.5,.025,mat(0x273b36,.3,.2))}
+// utility wires suspended across yard
+const wireMat=new THREE.LineBasicMaterial({color:0x252a27,transparent:true,opacity:.8});function wire(a,b,c){const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(...a),new THREE.Vector3(...b),new THREE.Vector3(...c)]);scene.add(new THREE.Mesh(new THREE.TubeGeometry(curve,24,.025,5,false),wireMat))}
+wire([-8,6,-18],[0,5.5,-12],[8,6,-5]);wire([-8,6,-3],[0,5.5,-8],[8,6,-15]);
+
+// ---------- Residents and modular requests ----------
+const requests=[
+ {name:'Aigerim',need:'My back hurts',thanks:'My shoulders feel lighter. Thank you.'},
+ {name:'Serik',need:'I feel sick',thanks:'The warmth has settled my stomach. Rahmet.'},
+ {name:'Mariya',need:'I am stressed',thanks:'I can breathe again. Thank you, Zhanat.'},
+ {name:'Nurlan',need:'My knees are aching',thanks:'That feels much better. Rahmet, healer.'},
+ {name:'Dana',need:'I have a heavy heart',thanks:'The quiet helped more than you know.'}
+];
+const residents=[];
+function makeRequestSprite(text){const c=document.createElement('canvas');c.width=512;c.height=144;const g=c.getContext('2d');g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=14;g.fillStyle='rgba(15,18,16,.91)';g.beginPath();g.roundRect(8,8,496,126,12);g.fill();g.shadowBlur=0;g.strokeStyle='rgba(227,177,106,.65)';g.lineWidth=2;g.beginPath();g.roundRect(9,9,494,124,11);g.stroke();g.fillStyle='#e2aa68';g.beginPath();g.arc(42,72,17,0,Math.PI*2);g.fill();g.fillStyle='#2a1c12';g.font='600 25px sans-serif';g.textAlign='center';g.fillText('!',42,81);g.textAlign='left';g.fillStyle='#d5ccba';g.font='500 27px sans-serif';g.fillText(text,78,82);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false}));sp.scale.set(2.6,.74,1);return sp}
+function resident(data,index,x,z){const g=new THREE.Group();g.position.set(x,0,z);scene.add(g);const coat=[mat(0x596257),mat(0x62544a),mat(0x59616a),mat(0x746550),mat(0x625e55)][index];
+ // boots, legs, long coat silhouette
+ for(const s of [-1,1]){box(g,s*.17,.14,.02,.22,.28,.38,mats.darkStone);box(g,s*.16,.63,0,.24,.82,.26,index%2?mats.wood:mat(0x353a36));}
+ const body=box(g,0,1.35,0,.76,1.12,.42,coat);box(g,0,.97,-.02,.8,.42,.46,coat);box(g,0,1.91,0,.46,.48,.42,mats.skin);
+ // neck, face and hair
+ cyl(g,0,2.13,0,.12,.13,.2,mats.skin,10);sphere(g,0,2.48,0,.3,mats.skin,.84,1.08,.82);
+ const hair=mat(index===1?0x51483c:0x39362f);sphere(g,0,2.66,-.025,.29,hair,.9,.57,.88);box(g,0,2.48,.235,.38,.07,.07,mat(0x302b26));
+ // visible nose, eyes and collar
+ sphere(g,0,2.44,.27,.055,mats.skin,.8,1,1.2);for(let s of [-1,1])sphere(g,s*.105,2.52,.244,.025,mat(0x25231f),1,1,1);
+ box(g,0,1.88,.01,.49,.15,.46,index%2?mats.cream:mat(0x8c4f3c),.1,0,0);
+ // hanging arms / sleeves, pivoted for relieved animation
+ const arms=[];for(let s of [-1,1]){const pivot=new THREE.Group();pivot.position.set(s*.43,1.74,0);g.add(pivot);box(pivot,s*.035,-.44,0,.23,.82,.27,coat,0,0,s*.12);sphere(pivot,s*.04,-.87,.015,.12,mats.skin,.85,1,.8);arms.push(pivot)}
+ // belt and little scarf
+ box(g,0,1.03,.22,.58,.12,.045,mats.wood2);box(g,0,1.83,.24,.35,.23,.045,index===0?mat(0x95513b):mats.cream,.14,0,0);
+ const icon=makeRequestSprite(data.need);icon.position.set(0,3.55,0);g.add(icon);
+ const nameSprite=makeRequestSprite(data.name.toUpperCase());nameSprite.scale.set(1.45,.42,1);nameSprite.position.set(0,3.02,0);nameSprite.material.opacity=.83;g.add(nameSprite);
+ const halo=new THREE.PointLight(0xffc275,1.4,2.5,2);halo.position.set(0,2.6,.2);g.add(halo);
+ residents.push({group:g,body,arms,icon,nameSprite,data,index,healed:false,relief:0,baseY:0});
+}
+resident(requests[0],0,-3.1,-6.2);resident(requests[1],1,3.25,-9.6);resident(requests[2],2,-3.6,-14.2);resident(requests[3],3,3.8,-17.5);resident(requests[4],4,-.2,-21.6);
+
+// ---------- First-person hands and healing ritual props ----------
+const rig=new THREE.Group();camera.add(rig);scene.add(camera);
+const sleeveMat=mat(0x4c554d),handMat=mat(0x98735b),bladeMetal=new THREE.MeshStandardMaterial({color:0xb1b5ab,metalness:.8,roughness:.22,emissive:0x8b2110,emissiveIntensity:.3});
+rig.visible=false;
+const sword=new THREE.Group();rig.add(sword);sword.scale.setScalar(.45);sword.position.set(.72,-.78,-.78);sword.rotation.set(-.26,.04,-.15);
+// blade directed forward/up when raised, brass guard, leather wrapped grip
+const blade=new THREE.Mesh(new THREE.BoxGeometry(.115,.88,.045),bladeMetal);blade.position.y=.48;blade.castShadow=true;sword.add(blade);
+const bladeTip=new THREE.Mesh(new THREE.ConeGeometry(.082,.22,4),bladeMetal);bladeTip.position.set(0,1.02,0);bladeTip.rotation.z=Math.PI;sword.add(bladeTip);
+const guard=box(sword,0,.025,0,.37,.075,.12,mat(0x9a7441,.4,.7));guard.castShadow=false;
+cyl(sword,0,-.31,0,.07,.085,.55,mats.wood2,8);for(let i=0;i<5;i++){const wrap=cyl(sword,0,-.48+i*.075,0,.088,.088,.025,mat(0x554539),8);wrap.rotation.x=Math.PI/2}
+sphere(sword,0,-.61,0,.1,mat(0x9b7745,.4,.55));
+const swordGlow=new THREE.PointLight(0xff4b1f,0,3,2);swordGlow.position.set(0,.8,.1);sword.add(swordGlow);
+const bottle=new THREE.Group();rig.add(bottle);bottle.position.set(-.48,-.62,-.72);bottle.rotation.set(.16,.18,-.18);
+cyl(bottle,0,0,0,.095,.105,.42,mat(0x668174,.24,.25),12);cyl(bottle,0,.235,0,.047,.06,.09,mat(0x718d7c,.28,.15),10);cyl(bottle,0,.29,0,.052,.052,.045,mats.oldMetal,10);
+const water=new THREE.Mesh(new THREE.CylinderGeometry(.082,.09,.19,12),new THREE.MeshStandardMaterial({color:0x80b9ae,transparent:true,opacity:.45,roughness:.15}));water.position.y=-.09;bottle.add(water);
+const hand=new THREE.Group();rig.add(hand);hand.position.set(.3,-.67,-.63);hand.rotation.z=-.16;
+const sleeve=box(hand,0,-.15,0,.28,.46,.3,sleeveMat);const palm=sphere(hand,0,.12,0,.15,handMat,.86,.75,.72);for(let i=0;i<4;i++){const f=box(hand,-.1+i*.065,.24,.015,.045,.18,.065,handMat,-.16,0,0);f.castShadow=false}
+rig.position.set(0,0,0);
+
+// ---------- Steam and bubble particle effects ----------
+const effects=[];
+const steamMat=new THREE.MeshBasicMaterial({color:0xe9eee7,transparent:true,opacity:.48,depthWrite:false});
+const amberSteamMat=new THREE.MeshBasicMaterial({color:0xffbc75,transparent:true,opacity:.38,depthWrite:false});
+const bubbleMat=new THREE.MeshPhysicalMaterial({color:0xd9fff3,transparent:true,opacity:.64,roughness:.08,metalness:.1,transmission:.25,thickness:.15});
+function spawnHealingCloud(start,target){
+ const dest=target.group.position.clone().add(new THREE.Vector3(0,1.55,0));
+ for(let i=0;i<34;i++){const cloud=i<24;const m=new THREE.Mesh(new THREE.SphereGeometry(cloud?.13+Math.random()*.23:.035+Math.random()*.055,8,7),cloud?(Math.random()<.22?amberSteamMat:steamMat):bubbleMat);m.position.copy(start).add(new THREE.Vector3((Math.random()-.5)*.34,(Math.random()-.5)*.32,(Math.random()-.5)*.2));m.scale.setScalar(cloud?.65+Math.random()*.8:1);scene.add(m);effects.push({mesh:m,start:m.position.clone(),dest:dest.clone().add(new THREE.Vector3((Math.random()-.5)*.72,(Math.random()-.5)*.95,(Math.random()-.5)*.45)),age:0,duration:1.55+Math.random()*.85,cloud,seed:Math.random()*9})}
+ // glowing spark motes on the path
+ for(let i=0;i<12;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.035,7,6),new THREE.MeshBasicMaterial({color:i%2?0xffae56:0xffe6bd}));m.position.copy(start);scene.add(m);effects.push({mesh:m,start:start.clone(),dest:dest.clone().add(new THREE.Vector3((Math.random()-.5)*1.1,Math.random()*.9,(Math.random()-.5)*.5)),age:0,duration:1.2+Math.random()*.6,cloud:false,seed:Math.random()*9,spark:true})}
+}
+function animateEffects(dt){for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.age+=dt;const t=Math.min(e.age/e.duration,1);const smooth=t*t*(3-2*t);e.mesh.position.lerpVectors(e.start,e.dest,smooth);e.mesh.position.y+=Math.sin(e.age*5+e.seed)*(e.cloud?.07:.025);const fade=t<.72?1:(1-t)/.28;e.mesh.material.opacity=(e.spark?.9:e.cloud?.44:.62)*fade;if(e.cloud){const swell=1+Math.sin(t*Math.PI)*1.55;e.mesh.scale.setScalar(swell)}else e.mesh.scale.setScalar(1+Math.sin(e.age*9+e.seed)*.18);if(t>=1){scene.remove(e.mesh);e.mesh.geometry.dispose();if(e.spark)e.mesh.material.dispose();effects.splice(i,1)}}}
+
+// ---------- Player, camera controls and healing sequence ----------
+const player={pos:new THREE.Vector3(0,1.66,7),yaw:0,pitch:0,velocity:new THREE.Vector3(),speed:3.05,grounded:true};camera.position.copy(player.pos);
+const keys={};let isPlaying=false, pointerLocked=false, mobileLook=false, targetResident=null, healing=null, toastTimer=0, bob=0;
+const raycaster=new THREE.Raycaster();raycaster.far=7.5;const center=new THREE.Vector2(0,0);
+const ui={count:document.getElementById('healed-count'),cross:document.getElementById('crosshair'),target:document.getElementById('target-card'),name:document.getElementById('target-name'),toast:document.getElementById('toast'),healTouch:document.getElementById('heal-touch'),objective:document.getElementById('objective')};
+function showToast(message,gratitude=''){ui.toast.innerHTML=`${message}${gratitude?`<span class="gratitude">${gratitude}</span>`:''}`;ui.toast.classList.add('show');toastTimer=3.2}
+function startHealing(r){if(!r||r.healed||healing)return;healing={resident:r,time:0,sprayed:false};ui.target.classList.remove('visible');ui.cross.classList.remove('focus');ui.objective.textContent='A little warmth, offered with care';showToast('Beginning the healing ritual');}
+function finishHealing(r){if(r.healed)return;r.healed=true;r.icon.visible=false;r.nameSprite.visible=false;r.relief=0;ui.count.textContent=`${residents.filter(a=>a.healed).length}/${residents.length}`;ui.objective.textContent=residents.every(a=>a.healed)?'The village is at peace':'There is someone else nearby';showToast(r.data.thanks,'THANK YOU · RAHMET');if(residents.every(a=>a.healed)){setTimeout(()=>document.getElementById('complete-screen').classList.remove('hidden'),3500)}}
+function triggerHeal(){if(!isPlaying||healing)return;if(targetResident&&!targetResident.healed)startHealing(targetResident);else showToast('Look toward someone who needs a moment')}
+document.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')triggerHeal();if(e.code==='Escape'&&isPlaying&&!isTouchDevice)document.exitPointerLock?.()});document.addEventListener('keyup',e=>keys[e.code]=false);
+const isTouchDevice=('ontouchstart'in window)||navigator.maxTouchPoints>0;
+renderer.domElement.addEventListener('click',()=>{if(isPlaying&&!isTouchDevice&&!pointerLocked)renderer.domElement.requestPointerLock?.()});
+document.addEventListener('pointerlockchange',()=>{pointerLocked=document.pointerLockElement===renderer.domElement});
+document.addEventListener('mousemove',e=>{if(!isPlaying||!pointerLocked)return;player.yaw-=e.movementX*.0022;player.pitch=Math.max(-1.25,Math.min(1.25,player.pitch-e.movementY*.0022))});
+let joy={x:0,y:0,active:false,id:null};const joyEl=document.getElementById('joystick'),knob=document.getElementById('joy-knob');
+joyEl.addEventListener('pointerdown',e=>{joy.active=true;joy.id=e.pointerId;joyEl.setPointerCapture(e.pointerId);moveJoy(e)});joyEl.addEventListener('pointermove',e=>{if(joy.active&&e.pointerId===joy.id)moveJoy(e)});function moveJoy(e){const r=joyEl.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),len=Math.hypot(dx,dy),max=39,k=Math.min(1,max/(len||1));joy.x=dx/(r.width/2);joy.y=dy/(r.height/2);knob.style.transform=`translate(${dx*k}px,${dy*k}px)`}function endJoy(){joy.active=false;joy.x=joy.y=0;knob.style.transform=''}joyEl.addEventListener('pointerup',endJoy);joyEl.addEventListener('pointercancel',endJoy);ui.healTouch.addEventListener('pointerdown',e=>{e.preventDefault();triggerHeal()});
+let lastTouch=null;renderer.domElement.addEventListener('pointerdown',e=>{if(isPlaying&&isTouchDevice&&e.clientX>innerWidth*.32){mobileLook=true;lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId};renderer.domElement.setPointerCapture(e.pointerId)}});renderer.domElement.addEventListener('pointermove',e=>{if(!mobileLook||!lastTouch||e.pointerId!==lastTouch.id)return;const dx=e.clientX-lastTouch.x,dy=e.clientY-lastTouch.y;player.yaw-=dx*.006;player.pitch=Math.max(-1.2,Math.min(1.2,player.pitch-dy*.005));lastTouch={x:e.clientX,y:e.clientY,id:e.pointerId}});renderer.domElement.addEventListener('pointerup',()=>{mobileLook=false;lastTouch=null});
+function beginGame(){isPlaying=true;rig.visible=true;document.body.classList.add('playing');document.getElementById('start-screen').classList.add('hidden');if(!isTouchDevice)renderer.domElement.requestPointerLock?.()}
+document.getElementById('start-button').addEventListener('click',beginGame);document.getElementById('again-button').addEventListener('click',()=>location.reload());
+
+// ---------- Main loop ----------
+const clock=new THREE.Clock();const forward=new THREE.Vector3(),right=new THREE.Vector3();
+function findTarget(){raycaster.setFromCamera(center,camera);const objects=[];for(const r of residents)if(!r.healed){r.group.traverse(o=>{if(o.isMesh||o.isSprite)objects.push(o)})}const hit=raycaster.intersectObjects(objects,false)[0];let found=null;if(hit&&hit.distance<7.2){let o=hit.object;while(o&& !residents.some(r=>r.group===o))o=o.parent;if(o)found=residents.find(r=>r.group===o)||null}targetResident=found;ui.target.classList.toggle('visible',!!found&&!healing);ui.cross.classList.toggle('focus',!!found&&!healing);ui.healTouch.classList.toggle('ready',!!found&&!healing);if(found){ui.name.textContent=`${found.data.name} · “${found.data.need}”`} }
+function update(dt,time){if(!isPlaying)return;
+ camera.rotation.set(player.pitch,player.yaw,0,'YXZ');
+ // A gentle body sway gives the first-person walk some weight
+ let mx=(keys.KeyD?1:0)-(keys.KeyA?1:0),mz=(keys.KeyS?1:0)-(keys.KeyW?1:0);if(joy.active){mx=joy.x;mz=joy.y}const moving=Math.hypot(mx,mz)>.12&&!healing;
+ if(moving){const length=Math.hypot(mx,mz);mx/=Math.max(1,length);mz/=Math.max(1,length);forward.set(-Math.sin(player.yaw),0,-Math.cos(player.yaw));right.set(Math.cos(player.yaw),0,-Math.sin(player.yaw));player.pos.addScaledVector(right,mx*player.speed*dt);player.pos.addScaledVector(forward,-mz*player.speed*dt);player.pos.x=THREE.MathUtils.clamp(player.pos.x,-6.5,6.6);player.pos.z=THREE.MathUtils.clamp(player.pos.z,-23.4,9.5);bob+=dt*9}
+ camera.position.set(player.pos.x,player.pos.y+(moving?Math.sin(bob)*.035:0),player.pos.z);
+ // The sword and bottle rest low in frame until Zhanat begins the gentle ritual.
+ const swordRest={x:.72,y:-.78,z:-.78,rx:-.26,ry:.04,rz:-.15};const bottleRest={x:-.48,y:-.62,z:-.72,rx:.16,ry:.18,rz:-.18};let swordAmt=0,bottleAmt=0,sprayGlow=0;
+ if(healing){healing.time+=dt;const t=healing.time;swordAmt=THREE.MathUtils.smoothstep(t,.12,1.05);bottleAmt=THREE.MathUtils.smoothstep(t,1.24,1.75)*(1-THREE.MathUtils.smoothstep(t,2.25,2.58));sprayGlow=t>2.25&&t<3.1?1:0;
+  if(t>2.25&&!healing.sprayed){healing.sprayed=true;const start=camera.position.clone().add(new THREE.Vector3(0,-.12,0)).add(new THREE.Vector3(-Math.sin(player.yaw),0,-Math.cos(player.yaw)).multiplyScalar(.82));spawnHealingCloud(start,healing.resident);showToast('Warm breath, silver steam...')}
+  if(t>2.4&&t<2.8)bottleAmt=Math.max(bottleAmt,.2);
+  if(t>4.35){const r=healing.resident;finishHealing(r);healing=null}
+ }
+ sword.position.set(THREE.MathUtils.lerp(swordRest.x,.12,swordAmt),THREE.MathUtils.lerp(swordRest.y,-1.03,swordAmt),THREE.MathUtils.lerp(swordRest.z,-.54,swordAmt));sword.rotation.set(THREE.MathUtils.lerp(swordRest.rx,-.03,swordAmt),THREE.MathUtils.lerp(swordRest.ry,0,swordAmt),THREE.MathUtils.lerp(swordRest.rz,-.035,swordAmt));
+ bottle.position.set(THREE.MathUtils.lerp(bottleRest.x,-.36,bottleAmt),THREE.MathUtils.lerp(bottleRest.y,-.35,bottleAmt),THREE.MathUtils.lerp(bottleRest.z,-.48,bottleAmt));bottle.rotation.set(THREE.MathUtils.lerp(bottleRest.rx,-.68,bottleAmt),bottleRest.ry,THREE.MathUtils.lerp(bottleRest.rz,-.12,bottleAmt));
+ swordGlow.intensity=2.2+sprayGlow*11+Math.sin(time*8)*.8;bladeMetal.emissiveIntensity=.33+sprayGlow*.72;
+ // residents breathe quietly; a relieved posture opens their arms and lifts their chin
+ for(const r of residents){const sway=Math.sin(time*1.25+r.index)*.018;r.group.position.y=r.healed?Math.sin(time*2+r.index)*.025:0;r.group.rotation.y=Math.atan2(player.pos.x-r.group.position.x,player.pos.z-r.group.position.z)+sway;
+  if(r.healed){r.relief=Math.min(1,r.relief+dt*.75);for(let i=0;i<2;i++){const a=r.arms[i],side=i===0?-1:1;a.rotation.z=side*THREE.MathUtils.lerp(.12,.72,r.relief);a.rotation.x=-.12*r.relief}r.body.rotation.x=-.025*r.relief}else{r.arms.forEach((a,i)=>{a.rotation.z=Math.sin(time*1.4+i+r.index)*.025})}
+  r.icon.material.rotation=0;
+ }
+ findTarget();animateEffects(dt);
+ if(toastTimer>0){toastTimer-=dt;if(toastTimer<=0)ui.toast.classList.remove('show')}
+ // Warm lamp flicker is subtle, like an old filament
+ warm.intensity=32+Math.sin(time*3.1)*1.8;ambWarm.intensity=17+Math.sin(time*2.2+1)*1.2;
+}
+function render(){requestAnimationFrame(render);const dt=Math.min(clock.getDelta(),.04),time=clock.elapsedTime;update(dt,time);renderer.render(scene,camera)}render();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.65))});
+</script>
+</body>
+</html>
+// practical lamps with warm pools and metal shades
+function lamp(x,z){box(scene,x,4.2,z,.09,1.2,.09,mats.metal);box(scene,x,4.8,z+.22,.56,.09,.62,mats.metal,-.3,0,0);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.12,12,8),new THREE.MeshBasicMaterial({color:0xffb76b}));bulb.position.set(x,4.63,z+.22);scene.add(bulb);const l=new THREE.PointLight(0xffa65b,38,10,2);l.position.set(x,4.35,z+.3);scene.add(l);sphere(scene,x,4.35,z+.3,.2,new THREE.MeshBasicMaterial({color:0xffa653}),1,1,1)}
+lamp(-7.3,-4);lamp(8.35,-14);lamp(-1,-22);
+// little weeds between old stones
+const weedMat=mat(0x3e4b38);for(let i=0;i<46;i++){const x=(Math.random()-.5)*15,z=2-Math.random()*26;if(Math.random()<.45)continue;for(let j=0;j<3;j++){const h=.16+Math.random()*.34;const w=box(scene,x+(Math.random()-.5)*.2,h/2,z+(Math.random()-.5)*.2,.025,h,.025,weedMat,0,Math.random()*1.8,0);w.castShadow=false}}
