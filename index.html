@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101210" />
+  <title>Шахматы без фильтра — CHESS WITHOUT FILTER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">{"imports":{"chess.js":"https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm"}}</script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Шахматы без фильтра">
+        <span class="brand-mark">♞</span><span class="brand-copy"><strong>БЕЗ ФИЛЬТРА</strong><small>ШАХМАТЫ С ХАРАКТЕРОМ</small></span>
+      </a>
+      <div class="top-center"><span class="live-dot"></span> <span id="mode-label">ПАРТИЯ ПРОТИВ ИИ</span></div>
+      <div class="top-actions"><button class="icon-btn" id="sound-toggle" title="Выключить голос" aria-label="Выключить голос">◖))</button><button class="profile-chip"><span class="avatar">И</span><span>ИГРОК</span></button></div>
+    </header>
+    <main class="layout">
+      <aside class="left-rail">
+        <p class="eyebrow">РЕЖИМЫ</p>
+        <nav class="mode-nav" aria-label="Режимы игры">
+          <button class="mode-item active" data-mode="ai"><span class="mode-icon">♟</span><span>Против ИИ</span><span class="nav-arrow">↗</span></button>
+          <button class="mode-item" data-mode="local"><span class="mode-icon">♙</span><span>Вдвоём</span></button>
+          <button class="mode-item" data-mode="blitz"><span class="mode-icon">◷</span><span>Блиц · 3 мин</span></button>
+          <button class="mode-item" data-mode="puzzle"><span class="mode-icon">⌗</span><span>Задачи</span></button>
+          <button class="mode-item" data-mode="learn"><span class="mode-icon">✳</span><span>Обучение</span></button>
+          <button class="mode-item" data-mode="analysis"><span class="mode-icon">⌁</span><span>Анализ партии</span></button>
+          <button class="mode-item" data-mode="uncensored"><span class="mode-icon">⚡</span><span>Без цензуры</span><span class="hot-tag">18+</span></button>
+        </nav>
+        <div class="rail-divider"></div>
+        <div class="session-card"><div class="session-label">ТВОЯ СТАТИСТИКА</div><div class="stat-line"><span>Победы</span><strong>—</strong></div><div class="stat-line"><span>Серия</span><strong>—</strong></div><div class="stat-foot">Начни партию — посмотрим,<br>на что ты способен.</div></div>
+        <div class="rail-foot"><span class="engine-pulse"></span> ДВИЖОК STOCKFISH <span class="engine-state" id="engine-state">ЗАГРУЗКА</span></div>
+      </aside>
+      <section class="game-area">
+        <div class="game-heading"><div><div class="eyebrow">ПАРТИЯ № <span id="game-number">001</span> <span class="heading-sep">/</span> БЕЛЫЕ ХОДЯТ</div><h1>Покажи, на что <em>способен.</em></h1></div><button class="more-btn" id="new-game-top" aria-label="Новая партия">↻ <span>НОВАЯ ПАРТИЯ</span></button></div>
+        <div class="game-grid">
+          <div class="board-column">
+            <div class="player-strip opponent-strip"><div class="player-avatar bot-avatar">♞</div><div class="player-info"><strong>ГАРРИ <span class="accent">НЕФИЛЬТРОВ</span></strong><small>Гроссмейстер · <span id="difficulty-name">Крепкий орешек</span></small></div><div class="rating">♔ <b>2847</b></div><div class="clock" id="ai-clock">∞</div></div>
+            <div class="board-frame"><div class="eval-bar"><div class="eval-fill" id="eval-fill"></div><span class="eval-text" id="eval-text">0.0</span></div><div id="board" class="chessboard" role="grid" aria-label="Шахматная доска"></div></div>
+            <div class="player-strip user-strip"><div class="player-avatar user-avatar">И</div><div class="player-info"><strong>ТЫ <span class="you-tag">(БЕЛЫЕ)</span></strong><small id="turn-status">Твой ход. Не облажайся.</small></div><div class="rating">♙ <b>1200</b></div><div class="clock" id="user-clock">∞</div></div>
+            <div class="board-controls"><button id="undo-btn" class="control-btn">↶ <span>ОТМЕНИТЬ ХОД</span></button><button id="flip-btn" class="control-btn">⇅ <span>ПЕРЕВЕРНУТЬ</span></button><button id="restart-btn" class="control-btn">⟳ <span>СНАЧАЛА</span></button></div>
+          </div>
+          <aside class="right-panel">
+            <div class="panel-tabs"><button class="panel-tab selected" data-tab="talk">КОММЕНТАРИИ <span class="tab-count" id="comment-count">1</span></button><button class="panel-tab" data-tab="moves">ХОДЫ</button></div>
+            <div class="coach-card"><div class="coach-head"><div class="coach-avatar">♞</div><div><strong>Гарри Нефильтров</strong><small>ТВОЙ НЕВЫНОСИМЫЙ СОПЕРНИК</small></div><span class="online-dot"></span></div>
+              <div id="comment-view" class="comment-view"><div class="comment-meta"><span class="comment-tag">ЗНАКОМСТВО</span><time>СЕЙЧАС</time></div><p class="comment-text" id="comment-text">Ну что, усаживайся. Я обещаю не поддаваться. Ты — обещать ничего не должен, я и так всё вижу.</p><div class="comment-actions"><button id="replay-btn" class="replay-btn">▷ <span>ПРОИГРАТЬ</span></button><span class="voice-caption" id="voice-caption">РУССКИЙ · ИНТОНАЦИЯ: ЯЗВИТЕЛЬНАЯ</span></div></div>
+              <div id="moves-view" class="moves-view hidden"><div class="move-list" id="move-list"><div class="empty-moves">Партия только началась.<br>Не заставляй меня ждать.</div></div></div>
+            </div>
+            <div class="settings-card"><div class="settings-title"><span>НАСТРОЙКИ СОПЕРНИКА</span><span class="settings-cog">⚙</span></div><label class="select-label" for="difficulty">СИЛА ИГРЫ</label><select id="difficulty"><option value="1">Разминается · 600</option><option value="2">Уверенный · 1200</option><option value="3" selected>Крепкий орешек · 1800</option><option value="4">Гроссмейстер · 2400</option></select>
+              <div class="profanity-toggle"><div><strong>БЕЗ ЦЕНЗУРЫ <span class="tiny-18">18+</span></strong><small>Мат, сарказм и крепкое словцо</small></div><button class="switch" id="profanity-switch" role="switch" aria-checked="false" aria-label="Режим без цензуры"><span></span></button></div>
+              <div class="level-row" id="level-row"><span>ГРОМКОСТЬ МАТА</span><div class="levels"><button data-level="1">I</button><button class="selected" data-level="2">II</button><button data-level="3">III</button></div></div>
+              <div class="voice-row"><label for="volume">ГОЛОС</label><input id="volume" type="range" min="0" max="100" value="78"><span id="volume-value">78%</span></div>
+              <div class="voice-style"><span>ГОЛОС</span><select id="voice-style"><option value="male">Мужской · язвительный</option><option value="female">Женский · ледяное презрение</option><option value="calm">Спокойный аналитик</option></select></div>
+            </div>
+            <button id="resign-btn" class="resign-btn">СДАТЬСЯ И СОХРАНИТЬ ЛИЦО <span>↗</span></button>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <div id="promotion-modal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-card"><span class="eyebrow">ПОСЛЕДНИЙ ШАНС НЕ ОБЛАЖАТЬСЯ</span><h2>Во что превратим пешку?</h2><div class="promotion-options"><button data-piece="q">♕<small>ФЕРЗЬ</small></button><button data-piece="r">♖<small>ЛАДЬЯ</small></button><button data-piece="b">♗<small>СЛОН</small></button><button data-piece="n">♘<small>КОНЬ</small></button></div></div></div>
+    <div id="toast" class="toast" aria-live="polite"></div>
+    <footer class="footer"><span>ШАХМАТЫ — ИГРА ЧЕСТНАЯ. ТВОИ ХОДЫ — НЕ ВСЕГДА.</span><span>STOCKFISH ENGINE · <span id="footer-status">ИНИЦИАЛИЗАЦИЯ</span></span></footer>
+  </div>
+</body>
+</html>
